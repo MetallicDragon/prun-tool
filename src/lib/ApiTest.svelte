@@ -1,0 +1,80 @@
+<script lang="ts">
+    import BuildingComponent from './BuildingComponent.svelte';
+    import MaterialComponent from './MaterialComponent.svelte';
+    import buildingsRaw from '../assets/prun_data/buildings.json';
+    import FIOApi from '../services/fio_api';
+    import { Building } from '../models/building';
+    import type { IBuilding } from '../models/building';
+
+    let buildingsRawSorted = buildingsRaw.sort((a,b) => (a.Ticker > b.Ticker) ? 1 : ((b.Ticker > a.Ticker) ? -1 : 0));
+    let buildingsRawHavingRecipes = buildingsRawSorted.filter(b => b.Recipes.length > 0);
+
+    let buildings = buildingsRawHavingRecipes.map(b => new Building(b as IBuilding))
+
+    let promise;
+    let priceDataRaw;
+
+    async function getAndProcessPriceData() {
+        priceDataRaw = await FIOApi.get('rain/prices');
+        let priceMatMapping = {};
+        for (let p of priceDataRaw) {
+            priceMatMapping[p.Ticker] = p["NC1-Average"];
+        }
+
+        for (const building of buildings) {
+            for (const recipe of building.Recipes) {
+                let recipeInputCosts = {};
+                let recipeOutputCosts = {};
+
+                for (let inputMat of recipe.Inputs) {
+                    recipeInputCosts[inputMat.CommodityTicker] = priceMatMapping[inputMat.CommodityTicker];
+                }
+
+                for (let outputMat of recipe.Outputs) {
+                    recipeOutputCosts[outputMat.CommodityTicker] = priceMatMapping[outputMat.CommodityTicker];
+                }
+
+                recipe.updateInputCosts(recipeInputCosts);
+                recipe.updateOutputCosts(recipeOutputCosts);
+            }
+        }
+
+        buildings = buildings; //Force update
+
+        return priceDataRaw;
+    }
+
+    function clickCompanyInfo() {
+        promise = getAndProcessPriceData();
+    }
+
+</script>
+
+<MaterialComponent ticker=FE amount={10} price={426}/>
+<MaterialComponent ticker=OVE amount={10000} price={80}/>
+<MaterialComponent ticker=EPO amount={10}/>
+<MaterialComponent ticker=EXO price={80}/>
+
+<button on:click={clickCompanyInfo}>Get Price Data</button>
+
+<div>
+    {#await promise}
+        <p>...waiting</p>
+    {:then data}
+        {#if data}
+            Prices Fetched!
+        {:else}
+            <p>Press The Button!</p>
+        {/if}
+    {/await}
+    </div>
+
+<div>
+    <h1>Buildings Test</h1>
+    
+    {#each buildings as building}
+    <div>
+        <BuildingComponent {building}/>
+    </div>
+    {/each}
+</div>
