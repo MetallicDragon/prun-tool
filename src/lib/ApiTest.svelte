@@ -10,6 +10,7 @@
     let buildingsRawHavingRecipes = buildingsRawSorted.filter(b => b.Recipes.length > 0);
 
     let buildings = buildingsRawHavingRecipes.map(b => new Building(b as IBuilding))
+    let buildingsFiltered = buildings;
 
     let promise;
     let priceDataRaw;
@@ -40,7 +41,7 @@
             }
         }
 
-        buildings = buildings; //Force update
+        filterBuildings(); //Force update
 
         return priceDataRaw;
     }
@@ -49,9 +50,20 @@
         promise = getAndProcessPriceData();
     }
 
+    let buildingFilter = "";
+    function filterBuildings() {
+        if (buildingFilter) {
+            buildingsFiltered = buildings.filter((b) => b.Ticker.includes(buildingFilter));
+        } else {
+            buildingsFiltered = buildings;
+        }
+    }
+
 </script>
 
 <button on:click={clickCompanyInfo}>Get Price Data</button>
+
+<input bind:value={buildingFilter} on:change={filterBuildings} on:input={() => buildingFilter = buildingFilter.toUpperCase()}>
 
 <div>
     {#await promise}
@@ -68,7 +80,7 @@
 <div>
     <h1>Buildings Test</h1>
     
-    {#each buildings as building (building.BuildingId)}
+    {#each buildingsFiltered as building (building.BuildingId)}
     <div class="building-container">
         <BuildingComponent {building}/>
     </div>
