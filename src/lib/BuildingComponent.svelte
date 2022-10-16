@@ -6,7 +6,7 @@
 </script>
 
 <div style="text-align: right;">
-    {building.Name} - <MaterialComponent ticker={building.Ticker}/><br />
+    {building.Name} - <MaterialComponent material={ { CommodityTicker: building.Ticker } }/><br />
 
     {#each building.Recipes as recipe}
         <RecipeComponent {recipe}/>

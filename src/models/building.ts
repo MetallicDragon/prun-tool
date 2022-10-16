@@ -21,12 +21,6 @@ export interface IBuilding {
 export interface Building extends IBuilding {}
 export class Building {
     Recipes: Array<Recipe>;
-    Pioneers: number;
-    Settlers: number;
-    Technicians: number;
-    Engineers: number;
-    Scientists: number;
-    AreaCost: number;
 
     constructor(params: IBuilding) {
         this.BuildingCosts = params.BuildingCosts;

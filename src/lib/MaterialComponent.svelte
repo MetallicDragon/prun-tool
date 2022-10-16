@@ -1,22 +1,21 @@
 <script lang="ts">
     import numberFormatter from '../utils/numbers';
+    import type { IMaterial } from '../models/material';
 
-    export let ticker:string;
-    export let amount:number = null;
-    export let price:number = null;
-    $: priceFormatted = numberFormatter.formatCurrency(price);
+    export let material:IMaterial;
+    $: priceFormatted = numberFormatter.formatCurrency(material.Price);
 </script>
 
 <div class="material">
-    {#if amount}
-        <span class="amount">{amount}</span>
+    {#if material.Amount}
+        <span class="amount">{material.Amount}</span>
     {/if}
 
-    {#if price}
+    {#if material.Price}
         <span class="price">${priceFormatted}</span>
     {/if}
     
-    <span class="ticker">{ticker}</span>
+    <span class="ticker">{material.CommodityTicker}</span>
 </div>
 
 <style>

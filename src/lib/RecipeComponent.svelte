@@ -14,13 +14,25 @@
 <div class="indent">
     <div class="indent">
         {#each recipe.Inputs as { CommodityTicker, Amount}}
-            <MaterialComponent ticker={CommodityTicker} amount={Amount} price={recipe.InputCosts[CommodityTicker]}/>
+            <MaterialComponent material={
+                {
+                    CommodityTicker: CommodityTicker, 
+                    Amount: Amount,
+                    Price: recipe.InputCosts[CommodityTicker],
+                }
+            }/>
         {/each}
 
         ⇨
 
         {#each recipe.Outputs as { CommodityTicker, Amount}}
-            <MaterialComponent ticker={CommodityTicker} amount={Amount} price={recipe.OutputCosts[CommodityTicker]}/>
+            <MaterialComponent material={
+                {
+                    CommodityTicker: CommodityTicker, 
+                    Amount: Amount,
+                    Price: recipe.OutputCosts[CommodityTicker],
+                }
+            }/>
         {/each}
 
         {#if recipe.DurationMs}

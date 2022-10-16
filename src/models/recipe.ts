@@ -1,6 +1,8 @@
+import type { IMaterial } from "./material";
+
 export interface IRecipe {
-    Inputs: Array<any>;
-    Outputs: Array<any>;
+    Inputs: Array<IMaterial>;
+    Outputs: Array<IMaterial>;
     BuildingRecipeId: string;
     DurationMs: number;
     RecipeName: string;
