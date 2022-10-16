@@ -1,8 +1,10 @@
 <script lang="ts">
+    import numberFormatter from '../utils/numbers';
+
     export let ticker:string;
     export let amount:number = null;
     export let price:number = null;
-    $: priceFormatted = price ? price.toFixed(2) : null;
+    $: priceFormatted = numberFormatter.formatCurrency(price);
 </script>
 
 <div class="material">
@@ -10,7 +12,7 @@
         <span class="amount">{amount}</span>
     {/if}
 
-    {#if priceFormatted}
+    {#if price}
         <span class="price">${priceFormatted}</span>
     {/if}
     

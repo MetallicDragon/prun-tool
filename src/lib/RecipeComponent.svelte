@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { Recipe } from 'src/models/recipe';
+    import DurationComponent from './DurationComponent.svelte';
     import MaterialComponent from './MaterialComponent.svelte';
     export let recipe:Recipe;
 </script>
@@ -21,5 +22,9 @@
         {#each recipe.Outputs as { CommodityTicker, Amount}}
             <MaterialComponent ticker={CommodityTicker} amount={Amount} price={recipe.OutputCosts[CommodityTicker]}/>
         {/each}
+
+        {#if recipe.DurationMs}
+            <DurationComponent duration={recipe.DurationMs}/>
+        {/if}
     </div>
 </div>
