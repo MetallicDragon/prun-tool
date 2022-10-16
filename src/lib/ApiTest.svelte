@@ -50,11 +50,6 @@
 
 </script>
 
-<MaterialComponent ticker=FE amount={10} price={426}/>
-<MaterialComponent ticker=OVE amount={10000} price={80}/>
-<MaterialComponent ticker=EPO amount={10}/>
-<MaterialComponent ticker=EXO price={80}/>
-
 <button on:click={clickCompanyInfo}>Get Price Data</button>
 
 <div>
@@ -62,7 +57,7 @@
         <p>...waiting</p>
     {:then data}
         {#if data}
-            Prices Fetched!
+            <p>Prices Fetched!</p>
         {:else}
             <p>Press The Button!</p>
         {/if}
@@ -73,8 +68,18 @@
     <h1>Buildings Test</h1>
     
     {#each buildings as building}
-    <div>
+    <div class="building-container">
         <BuildingComponent {building}/>
     </div>
     {/each}
 </div>
+
+<style>
+    .building-container {
+        padding: 1rem 1rem;
+        margin: 1rem;
+        border-radius: 1rem;
+        background-color: var(--background);
+        width: auto;
+    }
+</style>

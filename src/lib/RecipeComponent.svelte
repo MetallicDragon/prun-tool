@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Recipe } from 'src/models/recipe';
+    import MaterialComponent from './MaterialComponent.svelte';
     export let recipe:Recipe;
-    export let showDetails = false;
 </script>
 
 <style>
@@ -11,25 +11,15 @@
 </style>
 
 <div class="indent">
-    {recipe.RecipeName}
+    <div class="indent">
+        {#each recipe.Inputs as { CommodityTicker, Amount}}
+            <MaterialComponent ticker={CommodityTicker} amount={Amount} price={recipe.InputCosts[CommodityTicker]}/>
+        {/each}
 
-    {#if showDetails}
-        <div class="indent">
-            Inputs:
-            {#each recipe.Inputs as { CommodityTicker, Amount}}
-                <div class="indent">
-                    <span>{Amount} {CommodityTicker}{recipe.InputCosts[CommodityTicker] ? " @ " + recipe.InputCosts[CommodityTicker] + " NCC " : ""}</span>
-                </div>
-            {/each}
-        </div>
+        ⇨
 
-        <div class="indent">
-            Outputs:
-            {#each recipe.Outputs as { CommodityTicker, Amount}}
-                <div class="indent">
-                    <span>{Amount} {CommodityTicker}{recipe.OutputCosts[CommodityTicker] ? " @ " + recipe.OutputCosts[CommodityTicker] + " NCC " : ""}</span>
-                </div>
-            {/each}
-        </div>
-    {/if}
+        {#each recipe.Outputs as { CommodityTicker, Amount}}
+            <MaterialComponent ticker={CommodityTicker} amount={Amount} price={recipe.OutputCosts[CommodityTicker]}/>
+        {/each}
+    </div>
 </div>

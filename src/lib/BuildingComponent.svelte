@@ -1,11 +1,14 @@
 <script lang="ts">
     import type { Building } from 'src/models/building';
     import RecipeComponent from './RecipeComponent.svelte';
+    import MaterialComponent from './MaterialComponent.svelte';
     export let building:Building;
 </script>
 
-{building.Ticker} - {building.Name}<br />
+<div style="text-align: right;">
+    {building.Name} - <MaterialComponent ticker={building.Ticker}/><br />
 
-{#each building.Recipes as recipe}
-    <RecipeComponent {recipe} showDetails={true}/>
-{/each}
+    {#each building.Recipes as recipe}
+        <RecipeComponent {recipe}/>
+    {/each}
+</div>

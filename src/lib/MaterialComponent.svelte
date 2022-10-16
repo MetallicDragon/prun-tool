@@ -2,7 +2,20 @@
     export let ticker:string;
     export let amount:number = null;
     export let price:number = null;
+    $: priceFormatted = price ? price.toFixed(2) : null;
 </script>
+
+<div class="material">
+    {#if amount}
+        <span class="amount">{amount}</span>
+    {/if}
+
+    {#if priceFormatted}
+        <span class="price">${priceFormatted}</span>
+    {/if}
+    
+    <span class="ticker">{ticker}</span>
+</div>
 
 <style>
     .material {
@@ -45,19 +58,7 @@
         line-height: 0.9;
         padding: 1px 2px 2px 1px;
         top: 0px;
-        right: 0px;
-        border-bottom-left-radius: 4px
+        left: 0px;
+        border-bottom-right-radius: 4px
     }
 </style>
-
-<div class="material">
-    {#if amount}
-        <span class="amount">{amount}</span>
-    {/if}
-
-    {#if price}
-        <span class="price">${price}</span>
-    {/if}
-    
-    <span class="ticker">{ticker}</span>
-</div>
