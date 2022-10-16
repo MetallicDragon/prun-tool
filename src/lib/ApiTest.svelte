@@ -67,7 +67,7 @@
 <div>
     <h1>Buildings Test</h1>
     
-    {#each buildings as building}
+    {#each buildings as building (building.BuildingId)}
     <div class="building-container">
         <BuildingComponent {building}/>
     </div>

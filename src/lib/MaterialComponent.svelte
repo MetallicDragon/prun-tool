@@ -25,9 +25,6 @@
         color: lightgray;
         background: grey;
         display: inline-block;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
         position: relative;
         text-align: center;
         width: 48px;

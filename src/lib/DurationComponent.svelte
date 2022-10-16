@@ -29,9 +29,6 @@
         color: lightgray;
         background: black;
         display: inline-block;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
         position: relative;
         text-align: center;
         width: 48px;
@@ -41,7 +38,7 @@
 
     .time {
         vertical-align: middle;
-        line-height: 48px;
+        line-height: 50px;
     }
 
     .time-hours {
