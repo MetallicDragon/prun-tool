@@ -36,6 +36,7 @@
 
                 recipe.updateInputCosts(recipeInputCosts);
                 recipe.updateOutputCosts(recipeOutputCosts);
+                recipe.calcProfits();
             }
         }
 

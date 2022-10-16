@@ -26,6 +26,8 @@ export default {
         let maxDecimals;
         if (powers > 0 || n >= 10_000) {
             maxDecimals = 0;
+        } else {
+            maxDecimals = 2;
         }
         
         formatted = formatted + n.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits: maxDecimals})

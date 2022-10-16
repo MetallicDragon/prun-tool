@@ -1,3 +1,4 @@
+import { debug } from "svelte/internal";
 import type { IMaterial } from "./material";
 
 export interface IRecipe {
@@ -14,6 +15,8 @@ export class Recipe {
     InputCostTotal: number;
     OutputCosts: any;
     OutputCostTotal: number;
+    Profit: number;
+    ProfitPerDay: number;
 
 
     constructor(params: IRecipe) {
@@ -32,8 +35,11 @@ export class Recipe {
         for (const [ticker, price] of Object.entries(newCosts)) {
             this.InputCosts[ticker] = price;
         }
-
-        this.InputCostTotal = Object.values(this.InputCosts).reduce((sum:number, x: number) => sum + x, 0) as number;
+        
+        this.InputCostTotal = 0;
+        for (const input of this.Inputs) {
+            this.InputCostTotal += this.InputCosts[input.CommodityTicker] * (input.Amount || 0);
+        }
     }
 
     updateOutputCosts(newCosts: {}) {
@@ -41,6 +47,15 @@ export class Recipe {
             this.OutputCosts[ticker] = price;
         }
 
-        this.OutputCostTotal = Object.values(this.OutputCosts).reduce((sum:number, x: number) => sum + x, 0) as number;
+        this.OutputCostTotal = 0;
+        for (const output of this.Outputs) {
+            this.OutputCostTotal += this.OutputCosts[output.CommodityTicker] * (output.Amount || 0);
+        }
+    }
+
+    calcProfits() {
+        this.Profit = this.OutputCostTotal - this.InputCostTotal;
+        const operationsPerDay = 86400000 / this.DurationMs;
+        this.ProfitPerDay = this.Profit * operationsPerDay;
     }
 }

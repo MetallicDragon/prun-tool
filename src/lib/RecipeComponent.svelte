@@ -1,4 +1,5 @@
 <script lang="ts">
+    import numberFormatter from '../utils/numbers';
     import type { Recipe } from 'src/models/recipe';
     import DurationComponent from './DurationComponent.svelte';
     import MaterialComponent from './MaterialComponent.svelte';
@@ -37,6 +38,10 @@
 
         {#if recipe.DurationMs}
             <DurationComponent duration={recipe.DurationMs}/>
+        {/if}
+
+        {#if recipe.Profit}
+            Profit/d ${numberFormatter.formatCurrency(recipe.ProfitPerDay)}
         {/if}
     </div>
 </div>
