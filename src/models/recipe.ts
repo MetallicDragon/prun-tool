@@ -19,6 +19,8 @@ export class Recipe {
     Profit: number;
     ProfitPerDay: number;
     PaybackPeriod: number;
+    WorkforceCostPerDay: number;
+    OperationsPerDay: number;
 
 
     constructor(params: IRecipe) {
@@ -31,6 +33,8 @@ export class Recipe {
         this.InputCostTotal = 0;
         this.OutputCosts = {};
         this.OutputCostTotal = 0;
+        this.WorkforceCostPerDay = 0;
+        this.OperationsPerDay = 86400000 / this.DurationMs;
     }
 
     updateInputCosts(newCosts: ITickerPriceMap) {
@@ -57,11 +61,15 @@ export class Recipe {
 
     calcProfits() {
         this.Profit = this.OutputCostTotal - this.InputCostTotal;
-        const operationsPerDay = 86400000 / this.DurationMs;
-        this.ProfitPerDay = this.Profit * operationsPerDay;
+        this.ProfitPerDay = this.Profit * this.OperationsPerDay;
+        this.ProfitPerDay -= this.WorkforceCostPerDay;
     }
 
     updatePaybackPeriod(buildingCost: number) {
         this.PaybackPeriod = buildingCost / this.ProfitPerDay;
+    }
+
+    updateWorkforceCost(workforceCost: number) {
+        this.WorkforceCostPerDay = workforceCost / this.OperationsPerDay;
     }
 }

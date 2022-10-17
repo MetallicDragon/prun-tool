@@ -42,3 +42,13 @@ fetch('https://rest.fnar.net/material/allmaterials')
         });
     })
     .catch((reason) => console.log("Error fetching materials: " + reason));
+
+fetch('https://rest.fnar.net/global/workforceneeds')
+    .then((response) => response.text())
+    .then((data) => {
+        fs.writeFile('src/assets/prun_data/workforceNeeds.json', data, (err) => {
+            if (err) throw err;
+            console.log("workforceNeeds.json updated");
+        });
+    })
+    .catch((reason) => console.log("Error fetching workforce needs: " + reason));

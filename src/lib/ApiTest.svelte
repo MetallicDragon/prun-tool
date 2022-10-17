@@ -5,11 +5,12 @@
     import FIOApi from '../services/fio_api';
     import { Building } from '../models/building';
     import type { IBuilding } from '../models/building';
+    import type { ITickerPriceMap } from 'src/models/misc';
 
     let buildingsRawSorted = buildingsRaw.sort((a,b) => (a.Ticker > b.Ticker) ? 1 : ((b.Ticker > a.Ticker) ? -1 : 0));
     let buildingsRawHavingRecipes = buildingsRawSorted.filter(b => b.Recipes.length > 0);
 
-    let buildings = buildingsRawHavingRecipes.map(b => new Building(b as IBuilding))
+    let buildings = buildingsRawHavingRecipes.map(b => new Building(b as IBuilding));
     let buildingsFiltered = buildings;
 
     let promise;
@@ -17,40 +18,16 @@
 
     async function getAndProcessPriceData() {
         priceDataRaw = await FIOApi.get('rain/prices');
-        let priceMatMapping = {};
+        let priceMatMapping = {} as ITickerPriceMap;
         for (let p of priceDataRaw) {
             priceMatMapping[p.Ticker] = p["NC1-Average"];
         }
 
         for (const building of buildings) {
-            let buildingInputCosts = {}
-            
-            for (let inputMat of building.BuildingCosts) {
-                buildingInputCosts[inputMat.CommodityTicker] = priceMatMapping[inputMat.CommodityTicker];
-            }
-
-            building.updateInputCosts(buildingInputCosts);
-                
-            for (const recipe of building.Recipes) {
-                let recipeInputCosts = {};
-                let recipeOutputCosts = {};
-
-                for (let inputMat of recipe.Inputs) {
-                    recipeInputCosts[inputMat.CommodityTicker] = priceMatMapping[inputMat.CommodityTicker];
-                }
-
-                for (let outputMat of recipe.Outputs) {
-                    recipeOutputCosts[outputMat.CommodityTicker] = priceMatMapping[outputMat.CommodityTicker];
-                }
-
-                recipe.updateInputCosts(recipeInputCosts);
-                recipe.updateOutputCosts(recipeOutputCosts);
-                recipe.calcProfits();
-                recipe.updatePaybackPeriod(building.InputCostTotal);
-            }
+            building.calcCosts(priceMatMapping);
         }
 
-        filterBuildings(); //Force update
+        filterBuildings();
 
         return priceDataRaw;
     }
