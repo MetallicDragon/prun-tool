@@ -23,6 +23,14 @@
         }
 
         for (const building of buildings) {
+            let buildingInputCosts = {}
+            
+            for (let inputMat of building.BuildingCosts) {
+                buildingInputCosts[inputMat.CommodityTicker] = priceMatMapping[inputMat.CommodityTicker];
+            }
+
+            building.updateInputCosts(buildingInputCosts);
+                
             for (const recipe of building.Recipes) {
                 let recipeInputCosts = {};
                 let recipeOutputCosts = {};
@@ -38,6 +46,7 @@
                 recipe.updateInputCosts(recipeInputCosts);
                 recipe.updateOutputCosts(recipeOutputCosts);
                 recipe.calcProfits();
+                recipe.updatePaybackPeriod(building.InputCostTotal);
             }
         }
 
@@ -53,6 +62,7 @@
     let buildingFilter = "";
     function filterBuildings() {
         if (buildingFilter) {
+            buildingFilter = buildingFilter.toUpperCase()
             buildingsFiltered = buildings.filter((b) => b.Ticker.includes(buildingFilter));
         } else {
             buildingsFiltered = buildings;
@@ -61,10 +71,13 @@
 
 </script>
 
-<button on:click={clickCompanyInfo}>Get Price Data</button>
 
-<input bind:value={buildingFilter} on:change={filterBuildings} on:input={() => buildingFilter = buildingFilter.toUpperCase()}>
+<div>
+    <label for="building-ticker">Building Ticker:</label>
+    <input name="building-ticker" bind:value={buildingFilter} on:input={filterBuildings}>
+</div>
 
+<button on:click={clickCompanyInfo}>Get Price Data (NC1 AVG)</button>
 <div>
     {#await promise}
         <p>...waiting</p>
@@ -75,15 +88,15 @@
             <p>Press The Button!</p>
         {/if}
     {/await}
-    </div>
+</div>
 
 <div>
-    <h1>Buildings Test</h1>
-    
+    <h1>Buildings</h1>
+    <p>Showing {buildingsFiltered.length} buildings</p>
     {#each buildingsFiltered as building (building.BuildingId)}
-    <div class="building-container">
-        <BuildingComponent {building}/>
-    </div>
+        <div class="building-container">
+            <BuildingComponent {building}/>
+        </div>
     {/each}
 </div>
 

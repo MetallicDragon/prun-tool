@@ -1,8 +1,10 @@
 import { Recipe } from './recipe';
 import type { IRecipe } from './recipe';
+import type { IMaterial } from './material';
+import type { ITickerPriceMap } from './misc';
 
 export interface IBuilding {
-    BuildingCosts: Array<any>;
+    BuildingCosts: Array<IMaterial>;
     Recipes: Array<IRecipe>;
     BuildingId: string;
     Name: string;
@@ -21,6 +23,8 @@ export interface IBuilding {
 export interface Building extends IBuilding {}
 export class Building {
     Recipes: Array<Recipe>;
+    InputCosts: ITickerPriceMap;
+    InputCostTotal: number;
 
     constructor(params: IBuilding) {
         this.BuildingCosts = params.BuildingCosts;
@@ -40,5 +44,18 @@ export class Building {
         this.AreaCost = params.AreaCost;
         this.UserNameSubmitted = params.UserNameSubmitted;
         this.Timestamp = params.Timestamp;
+        this.InputCosts = {};
+        this.InputCostTotal = 0;
+    }
+
+    updateInputCosts(newCosts: ITickerPriceMap) {
+        for (const [ticker, price] of Object.entries(newCosts)) {
+            this.InputCosts[ticker] = price;
+        }
+        
+        this.InputCostTotal = 0;
+        for (const input of this.BuildingCosts) {
+            this.InputCostTotal += this.InputCosts[input.CommodityTicker] * (input.Amount || 0);
+        }
     }
 }

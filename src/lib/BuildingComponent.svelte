@@ -6,7 +6,21 @@
 </script>
 
 <div style="text-align: right;">
-    {building.Name} - <MaterialComponent material={ { CommodityTicker: building.Ticker } }/><br />
+    {building.Name}
+
+    {#each building.BuildingCosts as { CommodityTicker, Amount}}
+        <MaterialComponent material={
+            {
+                CommodityTicker: CommodityTicker, 
+                Amount: Amount,
+                Price: building.InputCosts[CommodityTicker],
+            }
+        }/>
+    {/each}
+
+    ⇨
+
+    <MaterialComponent material={ { CommodityTicker: building.Ticker, Price: building.InputCostTotal } }/><br />
 
     {#each building.Recipes as recipe}
         <RecipeComponent {recipe}/>

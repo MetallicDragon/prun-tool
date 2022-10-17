@@ -6,14 +6,8 @@
     export let recipe:Recipe;
 </script>
 
-<style>
-    .indent {
-        margin-left: 2rem;
-    }
-</style>
-
-<div class="indent">
-    <div class="indent">
+<div>
+    <div>
         {#each recipe.Inputs as { CommodityTicker, Amount}}
             <MaterialComponent material={
                 {
@@ -41,7 +35,11 @@
         {/if}
 
         {#if recipe.Profit}
-            Profit/d ${numberFormatter.formatCurrency(recipe.ProfitPerDay)}
+            <strong>${numberFormatter.formatCurrency(recipe.ProfitPerDay)}</strong>/d 
+        {/if}
+
+        {#if recipe.PaybackPeriod}
+            PP: <strong>{recipe.PaybackPeriod > 0 ? recipe.PaybackPeriod.toFixed(1) : "inf"}</strong> days
         {/if}
     </div>
 </div>

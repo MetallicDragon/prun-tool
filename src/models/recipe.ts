@@ -1,5 +1,6 @@
 import { debug } from "svelte/internal";
 import type { IMaterial } from "./material";
+import type { ITickerPriceMap } from "./misc";
 
 export interface IRecipe {
     Inputs: Array<IMaterial>;
@@ -11,12 +12,13 @@ export interface IRecipe {
 
 export interface Recipe extends IRecipe {}
 export class Recipe {
-    InputCosts: any;
+    InputCosts: ITickerPriceMap;
     InputCostTotal: number;
-    OutputCosts: any;
+    OutputCosts: ITickerPriceMap;
     OutputCostTotal: number;
     Profit: number;
     ProfitPerDay: number;
+    PaybackPeriod: number;
 
 
     constructor(params: IRecipe) {
@@ -31,7 +33,7 @@ export class Recipe {
         this.OutputCostTotal = 0;
     }
 
-    updateInputCosts(newCosts: {}) {
+    updateInputCosts(newCosts: ITickerPriceMap) {
         for (const [ticker, price] of Object.entries(newCosts)) {
             this.InputCosts[ticker] = price;
         }
@@ -42,7 +44,7 @@ export class Recipe {
         }
     }
 
-    updateOutputCosts(newCosts: {}) {
+    updateOutputCosts(newCosts: ITickerPriceMap) {
         for (const [ticker, price] of Object.entries(newCosts)) {
             this.OutputCosts[ticker] = price;
         }
@@ -57,5 +59,9 @@ export class Recipe {
         this.Profit = this.OutputCostTotal - this.InputCostTotal;
         const operationsPerDay = 86400000 / this.DurationMs;
         this.ProfitPerDay = this.Profit * operationsPerDay;
+    }
+
+    updatePaybackPeriod(buildingCost: number) {
+        this.PaybackPeriod = buildingCost / this.ProfitPerDay;
     }
 }
