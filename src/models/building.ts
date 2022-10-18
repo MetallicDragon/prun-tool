@@ -54,28 +54,17 @@ export class Building {
         this.BuildingCostTotal = 0;
         for (const input of this.BuildingCosts) {
             input.Price = prices[input.CommodityTicker];
-            this.BuildingCostTotal += input.Price || 0;
+            this.BuildingCostTotal += (input.Price || 0) * input.Amount;
         }
     }
 
     calcRecipeCosts(prices: ITickerPriceMap) {
         for (const recipe of this.Recipes) {
-            let recipeInputCosts = {};
-            let recipeOutputCosts = {};
-
-            for (let inputMat of recipe.Inputs) {
-                recipeInputCosts[inputMat.CommodityTicker] = prices[inputMat.CommodityTicker];
-            }
-
-            for (let outputMat of recipe.Outputs) {
-                recipeOutputCosts[outputMat.CommodityTicker] = prices[outputMat.CommodityTicker];
-            }
-
-            recipe.updateInputCosts(recipeInputCosts);
-            recipe.updateOutputCosts(recipeOutputCosts);
+            recipe.updateInputCosts(prices);
+            recipe.updateOutputCosts(prices);
             recipe.updateWorkforceCost(this.WorkforceCostTotal);
+            recipe.updateBuildingCost(this.BuildingCostTotal);
             recipe.calcProfits();
-            recipe.updatePaybackPeriod(this.BuildingCostTotal);
         }
     }
 

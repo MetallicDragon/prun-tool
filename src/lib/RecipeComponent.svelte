@@ -41,7 +41,11 @@
         PP: <strong>{recipe.PaybackPeriod > 0 ? recipe.PaybackPeriod.toFixed(1) : "inf"}</strong> days
     {/if}
 
-    {#if recipe.WorkforceCostPerDay}
-        Workforce: <strong>${numberFormatter.formatCurrency(recipe.WorkforceCostPerDay)}</strong>/d
+    {#if recipe.WorkforceCostPerOperation}
+        Workforce: <strong>${numberFormatter.formatCurrency(recipe.WorkforceCostPerOperation)}</strong>
+    {/if}
+
+    {#if recipe.DepreciationPerOperation}
+        Depreciation: <strong>${numberFormatter.formatCurrency(recipe.DepreciationPerOperation)}</strong>
     {/if}
 </div>
