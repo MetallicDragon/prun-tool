@@ -2,6 +2,7 @@ import { Recipe } from './recipe';
 import type { IRecipe } from './recipe';
 import type { IMaterial } from './material';
 import type { ITickerPriceMap } from './misc';
+import workforceNeeds from '../assets/prun_data/workforceNeeds.json';
 
 export interface IBuilding {
     BuildingCosts: Array<IMaterial>;
@@ -18,13 +19,14 @@ export interface IBuilding {
     AreaCost: number;
     UserNameSubmitted: string;
     Timestamp: string;
+    Consumption: number;
 }
 
 export interface Building extends IBuilding {}
 export class Building {
     Recipes: Array<Recipe>;
-    InputCosts: ITickerPriceMap;
-    InputCostTotal: number;
+    BuildingCostTotal: number;
+    WorkforceCostTotal: number;
 
     constructor(params: IBuilding) {
         this.BuildingCosts = params.BuildingCosts;
@@ -44,18 +46,65 @@ export class Building {
         this.AreaCost = params.AreaCost;
         this.UserNameSubmitted = params.UserNameSubmitted;
         this.Timestamp = params.Timestamp;
-        this.InputCosts = {};
-        this.InputCostTotal = 0;
+        this.BuildingCostTotal = 0;
+        this.WorkforceCostTotal = 0;
     }
 
-    updateInputCosts(newCosts: ITickerPriceMap) {
-        for (const [ticker, price] of Object.entries(newCosts)) {
-            this.InputCosts[ticker] = price;
-        }
-        
-        this.InputCostTotal = 0;
+    calcBuildingCosts(prices: ITickerPriceMap) {
+        this.BuildingCostTotal = 0;
         for (const input of this.BuildingCosts) {
-            this.InputCostTotal += this.InputCosts[input.CommodityTicker] * (input.Amount || 0);
+            input.Price = prices[input.CommodityTicker];
+            this.BuildingCostTotal += (input.Price || 0) * input.Amount;
         }
+    }
+
+    calcRecipeCosts(prices: ITickerPriceMap) {
+        for (const recipe of this.Recipes) {
+            recipe.updateInputCosts(prices);
+            recipe.updateOutputCosts(prices);
+            recipe.updateWorkforceCost(this.WorkforceCostTotal);
+            recipe.updateBuildingCost(this.BuildingCostTotal);
+            recipe.calcProfits();
+        }
+    }
+
+    calcWorkforceCosts(prices: ITickerPriceMap) {
+        this.WorkforceCostTotal = 0;
+
+        const workforceTypes = [
+            {
+                buildingFunction: "Pioneers",
+                type: "PIONEER",
+            },
+            {
+                buildingFunction: "Settlers",
+                type: "SETTLER",
+            },
+            {
+                buildingFunction: "Technicians",
+                type: "TECHNICIAN",
+            },
+            {
+                buildingFunction: "Engineers",
+                type: "ENGINEER",
+            },
+            {
+                buildingFunction: "Scientists",
+                type: "SCIENTIST",
+            }
+        ]   
+        
+        for (const workforceType of workforceTypes) {
+            const singleTypeNeeds = workforceNeeds.find(n => n.WorkforceType == workforceType.type).Needs;
+            for (const need of singleTypeNeeds) {
+                this.WorkforceCostTotal += prices[need.MaterialTicker] * need.Amount * (this[workforceType.buildingFunction] / 100);
+            }
+        }
+    }
+
+    calcCosts(prices: ITickerPriceMap) {
+        this.calcBuildingCosts(prices);
+        this.calcWorkforceCosts(prices);
+        this.calcRecipeCosts(prices);
     }
 }
