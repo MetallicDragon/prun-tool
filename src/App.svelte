@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ApiTest from './lib/ApiTest.svelte';
+  import BuildingRecipesReport from './lib/BuildingRecipesReport.svelte';
 </script>
 
 <main>
@@ -8,6 +8,6 @@
   </h1>
 
   <p>
-    <ApiTest/>
+    <BuildingRecipesReport/>
   </p>
 </main>
