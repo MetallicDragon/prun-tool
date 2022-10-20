@@ -1,7 +1,7 @@
 import { Recipe } from './recipe';
 import type { IRecipe } from './recipe';
 import type { IMaterial } from './material';
-import type { ITickerPriceMap } from './misc';
+import type { ITickerPriceMap } from './misc_types';
 import workforceNeeds from '../assets/prun_data/workforceNeeds.json';
 
 export interface IBuilding {

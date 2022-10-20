@@ -52,3 +52,18 @@ fetch('https://rest.fnar.net/global/workforceneeds')
         });
     })
     .catch((reason) => console.log("Error fetching workforce needs: " + reason));
+
+fetch('https://rest.fnar.net/rain/prices')
+    .then((response) => response.text())
+    .then((data) => {
+        const sampleRow = JSON.parse(data)[0];
+        const keysToExclude = ["Ticker", "MMBuy", "MMSell"]
+        const rowKeys = Object.keys(sampleRow).filter((k) => {
+            return !keysToExclude.includes(k) && !(k.slice(-3) == "Amt") && !(k.slice(-5) == "Avail");
+        });
+        fs.writeFile('src/assets/prun_data/rain_price_keys.json', JSON.stringify(rowKeys), (err) => {
+            if (err) throw err;
+            console.log("rain_price_keys.json updated");
+        });
+    })
+    .catch((reason) => console.log("Error fetching rain's price sheet keys: " + reason));

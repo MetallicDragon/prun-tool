@@ -1,6 +1,6 @@
 import { debug } from "svelte/internal";
 import type { IMaterial } from "./material";
-import type { ITickerPriceMap } from "./misc";
+import type { ITickerPriceMap } from "./misc_types";
 
 export interface IRecipe {
     Inputs: Array<IMaterial>;
